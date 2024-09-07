@@ -13,15 +13,17 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -48,13 +50,15 @@ class IndexControllerTest {
     private AuthService authService;
     @MockBean
     private NotificationService notificationService;
+    @MockBean
+    private ProfilesService profilesService;
 
     private IndexController indexController;
 
     @BeforeEach
     void initTest() {
         this.indexController = new IndexController(
-                categoriesService, interviewsService, authService, notificationService
+                categoriesService, interviewsService, authService, notificationService, profilesService
         );
     }
 
@@ -84,10 +88,13 @@ class IndexControllerTest {
                 "interview2", "description2", "contact2",
                 "30.02.2024", "09.10.2023", 1);
         var listInterviews = List.of(firstInterview, secondInterview);
+        ProfileDTO profileDTO = new ProfileDTO();
+        profileDTO.setUsername("Username");
         when(topicsService.getByCategory(cat1.getId())).thenReturn(List.of(topicDTO1));
         when(topicsService.getByCategory(cat2.getId())).thenReturn(List.of(topicDTO2));
         when(categoriesService.getMostPopular()).thenReturn(listCat);
         when(interviewsService.getByType(1)).thenReturn(listInterviews);
+        when(profilesService.getProfileById(anyInt())).thenReturn(Optional.of(profileDTO));
         var listBread = List.of(new Breadcrumb("Главная", "/"));
         var model = new ConcurrentModel();
         var view = indexController.getIndexPage(model, null);
