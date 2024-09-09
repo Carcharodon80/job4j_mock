@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ public class IndexController {
     private final AuthService authService;
     private final NotificationService notifications;
     private final ProfilesService profilesService;
+    private final TopicsService topicsService;
 
     @GetMapping({"/", "index"})
     public String getIndexPage(Model model, HttpServletRequest req) throws JsonProcessingException {
@@ -47,6 +49,7 @@ public class IndexController {
         List<InterviewDTO> newInterviews = interviewsService.getByType(1);
         model.addAttribute("new_interviews", newInterviews);
         model.addAttribute("usernames", getUsernamesFromInterviews(newInterviews));
+        model.addAttribute("countInterviewsByCategories", getCountOfInterviewsByCategory(newInterviews));
         return "index";
     }
 
@@ -59,5 +62,13 @@ public class IndexController {
         return usernames;
     }
 
-
+    protected Map<Integer, Integer> getCountOfInterviewsByCategory(List<InterviewDTO> interviews)
+            throws JsonProcessingException {
+        Map<Integer, Integer> countInterviewsByCategories = new HashMap<>();
+        for (InterviewDTO interview : interviews) {
+            TopicDTO topicDTO = topicsService.getById(interview.getTopicId());
+            countInterviewsByCategories.merge(topicDTO.getCategory().getId(), 1, Integer::sum);
+        }
+        return countInterviewsByCategories;
+    }
 }
