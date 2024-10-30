@@ -310,4 +310,9 @@ public class PersonService {
         emptyNames.addAll(Arrays.asList(extra));
         return emptyNames;
     }
+
+    @Transactional
+    public int updateChatId(Long chatId, String email) {
+        return persons.updateChatId(chatId, email);
+    }
 }

@@ -2,8 +2,10 @@ package ru.checkdev.auth.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.auth.domain.Profile;
+import ru.checkdev.auth.dto.ChatIdProfileDTO;
 import ru.checkdev.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +88,17 @@ public class AuthController {
     @GetMapping("/revoke")
     @ResponseStatus(HttpStatus.OK)
     public void logout(HttpServletRequest request) {
+    }
 
+    /**
+     * Метод обновляет chatId в профиле Profile
+     */
+    @PostMapping("/updateChatId")
+    public ResponseEntity<Integer> updateChatId(@RequestBody ChatIdProfileDTO chatIdProfileDTO) {
+        int result = persons.updateChatId(chatIdProfileDTO.getChatId(), chatIdProfileDTO.getEmail());
+        return new ResponseEntity<>(
+                result,
+                result == 1 ? HttpStatus.OK : HttpStatus.BAD_REQUEST
+        );
     }
 }

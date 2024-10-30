@@ -39,6 +39,7 @@ public class Profile {
     private boolean show;
 
     private String salary;
+
     @Column(name = "about_short")
     private String aboutShort;
 
@@ -75,6 +76,9 @@ public class Profile {
     private Calendar updated;
 
     private Calendar created;
+
+    @Column(name = "chat_id")
+    private Long chatId;
 
     public Profile() {
     }
@@ -263,6 +267,14 @@ public class Profile {
 
     public void setCreated(Calendar created) {
         this.created = created;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     @Override

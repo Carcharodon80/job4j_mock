@@ -1,0 +1,1 @@
+ALTER TABLE profile ADD COLUMN chat_id bigint;

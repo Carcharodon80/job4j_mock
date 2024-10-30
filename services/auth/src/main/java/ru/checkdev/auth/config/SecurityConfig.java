@@ -40,17 +40,16 @@ public class SecurityConfig {
                 "/template/ping",
                 "/profiles/**",
                 "/swagger-ui/**",
-                "/v3/**"
+                "/v3/**",
+                "/updateChatId"
         );
     }
-
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());
-
     }
 
     @Bean

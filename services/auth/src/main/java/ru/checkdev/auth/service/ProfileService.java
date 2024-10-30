@@ -3,6 +3,7 @@ package ru.checkdev.auth.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.checkdev.auth.dto.ChatIdProfileDTO;
 import ru.checkdev.auth.dto.ProfileDTO;
 import ru.checkdev.auth.repository.PersonRepository;
 
@@ -40,5 +41,23 @@ public class ProfileService {
      */
     public List<ProfileDTO> findProfilesOrderByCreatedDesc() {
         return personRepository.findProfileOrderByCreatedDesc();
+    }
+
+    /**
+     * Получить ChatIdProfileDTO по chatId
+     * @param chatId chatId
+     * @return Optional<ChatIdProfileDTO>
+     */
+    public Optional<ChatIdProfileDTO> findProfileByChatId(Long chatId) {
+        return Optional.ofNullable(personRepository.findSimpleProfileByChatId(chatId));
+    }
+
+    /**
+     * Получить ChatIdProfileDTO по email
+     *
+     * @return Optional<ChatIdProfileDTO>
+     */
+    public Optional<ChatIdProfileDTO> findProfileByEmail(String email) {
+        return Optional.ofNullable(personRepository.findSimpleProfileByEmail(email));
     }
 }

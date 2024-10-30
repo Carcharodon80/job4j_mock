@@ -3,14 +3,13 @@ package ru.checkdev.auth.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.checkdev.auth.dto.ProfileDTO;
+import ru.checkdev.auth.dto.ChatIdProfileDTO;
 import ru.checkdev.auth.service.ProfileService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * CheckDev пробное собеседование
@@ -40,7 +39,8 @@ public class ProfileController {
         var profileDTO = profileService.findProfileByID(id);
         return new ResponseEntity<>(
                 profileDTO.orElse(new ProfileDTO()),
-                profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
+                profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK
+        );
     }
 
     /**
@@ -53,6 +53,25 @@ public class ProfileController {
         var profiles = profileService.findProfilesOrderByCreatedDesc();
         return new ResponseEntity<>(
                 profiles,
-                profiles.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
+                profiles.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/chatId/{chatId}")
+    public ResponseEntity<ChatIdProfileDTO> getProfileByChatId(@PathVariable Long chatId) {
+        Optional<ChatIdProfileDTO> profileDTO = profileService.findProfileByChatId(chatId);
+        return new ResponseEntity<>(
+                profileDTO.orElse(new ChatIdProfileDTO()),
+                profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<ChatIdProfileDTO> getProfileByEmail(@PathVariable String email) {
+        Optional<ChatIdProfileDTO> profile = profileService.findProfileByEmail(email);
+        return new ResponseEntity<>(
+                profile.orElse(new ChatIdProfileDTO()),
+                profile.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK
+        );
     }
 }

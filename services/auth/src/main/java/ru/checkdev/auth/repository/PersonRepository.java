@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.domain.Photo;
+import ru.checkdev.auth.dto.ChatIdProfileDTO;
 import ru.checkdev.auth.dto.ProfileDTO;
 
 import java.util.List;
@@ -70,6 +71,32 @@ public interface PersonRepository extends CrudRepository<Profile, Integer> {
      *
      * @return List ProfileDTO
      */
-    @Query("SELECT new ru.checkdev.auth.dto.ProfileDTO(p.id, p.username, p.experience, p.photo.id, p.updated, p.created) FROM profile p ORDER BY p.created DESC")
+    @Query("select new ru.checkdev.auth.dto.ProfileDTO(p.id, p.username, p.experience, p.photo.id, p.updated, p.created) FROM profile p ORDER BY p.created DESC")
     List<ProfileDTO> findProfileOrderByCreatedDesc();
+
+    /**
+     * Метод ищет профиль по chatId, используется для проверки привязки аккаунта Telegram
+     * @param chatId
+     * @return ChatIdProfileDTO
+     */
+    @Query("select new ru.checkdev.auth.dto.ChatIdProfileDTO(p.id, p.username, p.password, p.email, p.chatId) FROM profile p WHERE p.chatId = :chatId")
+    ChatIdProfileDTO findSimpleProfileByChatId(@Param("chatId") long chatId);
+
+    /**
+     * Метод ищет профиль по email
+     * @param email
+     * @return ChatIdProfileDTO
+     */
+    @Query("select new ru.checkdev.auth.dto.ChatIdProfileDTO(p.id, p.username, p.password, p.email, p.chatId) FROM profile p WHERE p.email = :email")
+    ChatIdProfileDTO findSimpleProfileByEmail(@Param("email") String email);
+
+    /**
+     * Обновление chatId в профиле, используется для привязки/отвязки профиля Telegram
+     * @param chatId
+     * @param email
+     * @return int
+     */
+    @Modifying
+    @Query("update profile p set p.chatId = :chatId where p.email = :email")
+    int updateChatId(@Param("chatId") Long chatId, @Param("email") String email);
 }
